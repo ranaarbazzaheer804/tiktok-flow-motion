@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { ArrowRight, Check } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,17 @@ const Signup = () => {
     // Simulate signup process
     setTimeout(() => {
       setIsLoading(false);
-      alert("Signup functionality requires backend integration");
+      
+      // For demo purposes, store user info in localStorage
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userName", name);
+      
+      toast.success("Account created successfully!", {
+        description: "Welcome to GetViralFast"
+      });
+      
+      navigate("/dashboard");
     }, 1500);
   };
 
