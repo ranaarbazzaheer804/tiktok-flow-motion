@@ -7,15 +7,17 @@ interface FeatureCardProps {
   description: string;
   icon: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export function FeatureCard({ title, description, icon, className }: FeatureCardProps) {
+export function FeatureCard({ title, description, icon, className, style }: FeatureCardProps) {
   return (
     <div 
       className={cn(
         "glass-card p-6 flex flex-col gap-4 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 group",
         className
       )}
+      style={style}
     >
       <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-viral-purple/20 to-viral-pink/20 dark:from-viral-purple/30 dark:to-viral-pink/30 flex items-center justify-center text-viral-purple group-hover:shadow-glow transition-shadow duration-300">
         {icon}
