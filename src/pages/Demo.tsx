@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,18 +7,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sparkles, Loader, Copy, RefreshCw } from "lucide-react";
+import { VoiceInput } from "@/components/VoiceInput";
+import { TypingAnimation } from "@/components/TypingAnimation";
+import { toast } from "sonner";
 
 const Demo = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [contentType, setContentType] = useState("trend");
   const [generatedScript, setGeneratedScript] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
   
   const handleGenerate = () => {
     if (!prompt.trim()) return;
     
     setIsGenerating(true);
     setGeneratedScript("");
+    setIsTyping(false);
     
     // Simulate AI generation
     setTimeout(() => {
@@ -29,14 +34,20 @@ const Demo = () => {
         "This simple beauty trick will save you so much money! 💄 I used to spend $50 but now I only spend $5! #beauty #moneysaver #beautyhack"
       ];
       
-      setGeneratedScript(scripts[Math.floor(Math.random() * scripts.length)]);
+      const selectedScript = scripts[Math.floor(Math.random() * scripts.length)];
+      setGeneratedScript(selectedScript);
       setIsGenerating(false);
+      setIsTyping(true);
     }, 2000);
   };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedScript);
-    alert("Copied to clipboard!");
+    toast.success("Copied to clipboard!");
+  };
+
+  const handleVoiceInput = (transcript: string) => {
+    setPrompt(transcript);
   };
 
   return (
@@ -58,13 +69,16 @@ const Demo = () => {
                 <label htmlFor="prompt" className="block text-sm font-medium mb-2">
                   What would you like to create content about?
                 </label>
-                <Input
-                  id="prompt"
-                  placeholder="e.g., morning routine, fashion tips, cooking hack"
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  className="w-full"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="prompt"
+                    placeholder="e.g., morning routine, fashion tips, cooking hack"
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    className="w-full"
+                  />
+                  <VoiceInput onTranscript={handleVoiceInput} />
+                </div>
               </div>
               
               <div>
@@ -107,7 +121,7 @@ const Demo = () => {
             </div>
           </div>
           
-          {generatedScript && (
+          {(generatedScript || isGenerating) && (
             <Card className="mb-12 glass-card overflow-hidden">
               <div className="p-3 bg-viral-purple/10 border-b border-viral-purple/20 flex items-center justify-between">
                 <h3 className="font-medium">Generated TikTok Script</h3>
@@ -117,6 +131,7 @@ const Demo = () => {
                     variant="outline"
                     onClick={handleCopy}
                     className="h-8"
+                    disabled={!generatedScript || isTyping}
                   >
                     <Copy className="h-3.5 w-3.5 mr-1" />
                     Copy
@@ -126,7 +141,7 @@ const Demo = () => {
                     variant="outline"
                     onClick={handleGenerate}
                     className="h-8"
-                    disabled={isGenerating}
+                    disabled={isGenerating || !prompt.trim()}
                   >
                     <RefreshCw className={`h-3.5 w-3.5 mr-1 ${isGenerating ? 'animate-spin' : ''}`} />
                     Regenerate
@@ -134,11 +149,21 @@ const Demo = () => {
                 </div>
               </div>
               <CardContent className="p-6">
-                <Textarea 
-                  value={generatedScript} 
-                  readOnly 
-                  className="min-h-[100px] text-lg leading-relaxed"
-                />
+                {isGenerating ? (
+                  <div className="min-h-[100px] flex items-center justify-center">
+                    <Loader className="h-8 w-8 animate-spin text-viral-purple" />
+                  </div>
+                ) : isTyping ? (
+                  <div className="min-h-[100px] text-lg leading-relaxed">
+                    <TypingAnimation text={generatedScript} speed={30} />
+                  </div>
+                ) : (
+                  <Textarea 
+                    value={generatedScript} 
+                    readOnly 
+                    className="min-h-[100px] text-lg leading-relaxed"
+                  />
+                )}
               </CardContent>
             </Card>
           )}

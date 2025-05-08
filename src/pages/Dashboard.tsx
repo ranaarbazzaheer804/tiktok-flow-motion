@@ -4,7 +4,9 @@ import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { ScriptCard } from "@/components/ScriptCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart, Sparkles, TrendingUp, Zap, Plus, Loader } from "lucide-react";
+import { BarChart, Sparkles, TrendingUp, Zap, Plus, Loader, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -34,6 +36,7 @@ const Dashboard = () => {
       saved: false,
     },
   ]);
+  const navigate = useNavigate();
 
   const savedScripts = scripts.filter(script => script.saved);
 
@@ -61,6 +64,14 @@ const Dashboard = () => {
       )
     );
   };
+  
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
+    toast.success("Successfully logged out");
+    navigate("/login");
+  };
 
   return (
     <Layout>
@@ -70,23 +81,32 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold mb-2">Welcome to your Dashboard</h1>
             <p className="text-muted-foreground">Generate and manage your viral TikTok scripts</p>
           </div>
-          <Button 
-            onClick={handleGenerateScript}
-            disabled={isGenerating}
-            className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90"
-          >
-            {isGenerating ? (
-              <>
-                <Loader className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Plus className="mr-2 h-4 w-4" />
-                Generate New Script
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleGenerateScript}
+              disabled={isGenerating}
+              className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Generate New Script
+                </>
+              )}
+            </Button>
+            <Button 
+              onClick={handleLogout} 
+              variant="outline"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
         
         <Tabs defaultValue="all" className="w-full">
@@ -106,8 +126,11 @@ const Dashboard = () => {
                   engagement={script.engagement}
                   saved={script.saved}
                   onSave={() => toggleSaveScript(script.id)}
-                  onCopy={() => alert(`Script copied: ${script.title}`)}
-                  onEdit={() => alert(`Edit script: ${script.title}`)}
+                  onCopy={() => {
+                    navigator.clipboard.writeText(script.content);
+                    toast.success(`Script copied: ${script.title}`);
+                  }}
+                  onEdit={() => toast.info(`Edit script: ${script.title}`)}
                 />
               ))}
             </div>
@@ -135,8 +158,11 @@ const Dashboard = () => {
                     engagement={script.engagement}
                     saved={script.saved}
                     onSave={() => toggleSaveScript(script.id)}
-                    onCopy={() => alert(`Script copied: ${script.title}`)}
-                    onEdit={() => alert(`Edit script: ${script.title}`)}
+                    onCopy={() => {
+                      navigator.clipboard.writeText(script.content);
+                      toast.success(`Script copied: ${script.title}`);
+                    }}
+                    onEdit={() => toast.info(`Edit script: ${script.title}`)}
                   />
                 ))}
               </div>
