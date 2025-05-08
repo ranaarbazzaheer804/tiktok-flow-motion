@@ -17,6 +17,7 @@ export function PricingSection() {
         { title: "Performance analytics", included: false },
       ],
       ctaText: "Get Started",
+      ctaLink: "/signup",
     },
     {
       name: "Starter",
@@ -33,6 +34,7 @@ export function PricingSection() {
       ],
       popular: true,
       ctaText: "Start Free Trial",
+      ctaLink: "/signup",
     },
     {
       name: "Pro",
@@ -48,6 +50,7 @@ export function PricingSection() {
         { title: "Advanced performance analytics", included: true },
       ],
       ctaText: "Start Free Trial",
+      ctaLink: "/signup",
     },
   ];
 
@@ -74,6 +77,7 @@ export function PricingSection() {
               features={plan.features}
               popular={plan.popular}
               ctaText={plan.ctaText}
+              ctaLink={plan.ctaLink}
             />
           ))}
         </div>

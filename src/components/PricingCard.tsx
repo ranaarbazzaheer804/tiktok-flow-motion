@@ -2,6 +2,7 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface PricingFeature {
   title: string;
@@ -17,6 +18,7 @@ interface PricingCardProps {
   popular?: boolean;
   className?: string;
   ctaText?: string;
+  ctaLink?: string;
 }
 
 export function PricingCard({
@@ -28,6 +30,7 @@ export function PricingCard({
   popular = false,
   className,
   ctaText = "Subscribe",
+  ctaLink = "/signup",
 }: PricingCardProps) {
   return (
     <div
@@ -78,16 +81,18 @@ export function PricingCard({
         </ul>
       </div>
 
-      <Button
-        className={cn(
-          "w-full",
-          popular
-            ? "bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90"
-            : "bg-primary/10 hover:bg-primary/20 text-foreground"
-        )}
-      >
-        {ctaText}
-      </Button>
+      <Link to={ctaLink}>
+        <Button
+          className={cn(
+            "w-full",
+            popular
+              ? "bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90"
+              : "bg-primary/10 hover:bg-primary/20 text-foreground"
+          )}
+        >
+          {ctaText}
+        </Button>
+      </Link>
     </div>
   );
 }

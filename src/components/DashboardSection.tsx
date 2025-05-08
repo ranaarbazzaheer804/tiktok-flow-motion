@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScriptCard } from "./ScriptCard";
 import { Loader } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function DashboardSection() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -98,6 +99,14 @@ export function DashboardSection() {
               onEdit={() => alert(`Edit script: ${script.title}`)}
             />
           ))}
+        </div>
+        
+        <div className="text-center mt-12">
+          <Link to="/demo">
+            <Button className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90 px-8 py-2">
+              Try More Features
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

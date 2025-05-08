@@ -1,6 +1,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function HeroSection() {
   return (
@@ -17,13 +18,17 @@ export function HeroSection() {
               Our AI analyzes trending topics to generate scripts that go viral.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90 px-6 py-6 text-lg font-medium">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button variant="outline" className="px-6 py-6 text-lg font-medium">
-                View Demo
-              </Button>
+              <Link to="/signup">
+                <Button className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90 px-6 py-6 text-lg font-medium">
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/demo">
+                <Button variant="outline" className="px-6 py-6 text-lg font-medium">
+                  View Demo
+                </Button>
+              </Link>
             </div>
           </div>
           
