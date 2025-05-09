@@ -7,16 +7,34 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Copy, Save, RefreshCw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Sparkles, Copy, Save, RefreshCw, Settings, Key } from "lucide-react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const AIAssistant = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [generatedScript, setGeneratedScript] = useState("");
   const [platform, setPlatform] = useState("tiktok");
-  
+  const [apiSettings, setApiSettings] = useState({
+    apiKey: "",
+    useCustomApi: false,
+    model: "gpt-4o-mini"
+  });
+
   // Initialize with a welcome message
   useEffect(() => {
     const initialMessage: ChatMessage = {
@@ -26,6 +44,19 @@ const AIAssistant = () => {
       timestamp: new Date()
     };
     setMessages([initialMessage]);
+
+    // Check for saved API key in localStorage
+    const savedApiKey = localStorage.getItem('chatgpt-api-key');
+    const savedUseCustomApi = localStorage.getItem('use-custom-api') === 'true';
+    const savedModel = localStorage.getItem('chatgpt-model') || 'gpt-4o-mini';
+    
+    if (savedApiKey) {
+      setApiSettings({
+        apiKey: savedApiKey,
+        useCustomApi: savedUseCustomApi,
+        model: savedModel
+      });
+    }
   }, []);
   
   const handleSendMessage = async (content: string) => {
@@ -41,21 +72,65 @@ const AIAssistant = () => {
     setIsProcessing(true);
     
     try {
-      // In a real implementation, this would call the OpenAI API
-      // For now, we'll simulate a response
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Generate a response based on the platform
       let responseContent = "";
       
-      if (content.toLowerCase().includes("marketing") || content.toLowerCase().includes("business")) {
-        responseContent = generateMarketingResponse(platform);
-      } else if (content.toLowerCase().includes("review") || content.toLowerCase().includes("product")) {
-        responseContent = generateReviewResponse(platform);
-      } else if (content.toLowerCase().includes("educational") || content.toLowerCase().includes("learn")) {
-        responseContent = generateEducationalResponse(platform);
+      // If using custom API and API key is provided
+      if (apiSettings.useCustomApi && apiSettings.apiKey) {
+        try {
+          // Make actual API call to OpenAI
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiSettings.apiKey}`
+            },
+            body: JSON.stringify({
+              model: apiSettings.model,
+              messages: [
+                {
+                  role: 'system',
+                  content: `You are an expert ${platform} script writer. Your goal is to create viral scripts that engage viewers and drive engagement. Output format should be optimized for the ${platform} platform. Make scripts concise and engaging.`
+                },
+                ...messages.map(msg => ({
+                  role: msg.role,
+                  content: msg.content
+                })),
+                {
+                  role: 'user',
+                  content
+                }
+              ],
+              max_tokens: 1000,
+            })
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error?.message || 'Error calling ChatGPT API');
+          }
+
+          const data = await response.json();
+          responseContent = data.choices[0].message.content;
+        } catch (error) {
+          console.error('API Error:', error);
+          toast.error('Error calling ChatGPT API', {
+            description: error instanceof Error ? error.message : 'Please check your API key and try again'
+          });
+          responseContent = "I'm sorry, there was an error connecting to the ChatGPT API. Please check your API key and try again.";
+        }
       } else {
-        responseContent = generateGenericResponse(platform);
+        // Fallback to mock responses when not using API or no API key provided
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        if (content.toLowerCase().includes("marketing") || content.toLowerCase().includes("business")) {
+          responseContent = generateMarketingResponse(platform);
+        } else if (content.toLowerCase().includes("review") || content.toLowerCase().includes("product")) {
+          responseContent = generateReviewResponse(platform);
+        } else if (content.toLowerCase().includes("educational") || content.toLowerCase().includes("learn")) {
+          responseContent = generateEducationalResponse(platform);
+        } else {
+          responseContent = generateGenericResponse(platform);
+        }
       }
       
       const assistantMessage: ChatMessage = {
@@ -71,6 +146,9 @@ const AIAssistant = () => {
       const scriptMatch = responseContent.match(/```([\s\S]*?)```/);
       if (scriptMatch && scriptMatch[1]) {
         setGeneratedScript(scriptMatch[1].trim());
+      } else {
+        // If no code block is found, treat the entire response as the script
+        setGeneratedScript(responseContent);
       }
       
     } catch (error) {
@@ -107,6 +185,19 @@ const AIAssistant = () => {
     handleSendMessage(prompt);
   };
 
+  const saveApiSettings = () => {
+    if (apiSettings.useCustomApi && !apiSettings.apiKey) {
+      toast.error("Please enter an API key to use custom API");
+      return;
+    }
+    
+    localStorage.setItem('chatgpt-api-key', apiSettings.apiKey);
+    localStorage.setItem('use-custom-api', apiSettings.useCustomApi.toString());
+    localStorage.setItem('chatgpt-model', apiSettings.model);
+    
+    toast.success("API settings saved successfully!");
+  };
+
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
@@ -130,16 +221,86 @@ const AIAssistant = () => {
             <div className="glass-card p-4 mb-4">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-semibold">ChatGPT Script Output</h2>
-                <Select value={platform} onValueChange={setPlatform}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Platform" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="tiktok">TikTok</SelectItem>
-                    <SelectItem value="youtube">YouTube</SelectItem>
-                    <SelectItem value="twitter">Twitter</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center gap-2">
+                  <Select value={platform} onValueChange={setPlatform}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Platform" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="tiktok">TikTok</SelectItem>
+                      <SelectItem value="youtube">YouTube</SelectItem>
+                      <SelectItem value="twitter">Twitter</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>ChatGPT API Settings</DialogTitle>
+                        <DialogDescription>
+                          Configure your OpenAI API settings to use ChatGPT directly.
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="flex items-center space-x-2 py-4">
+                        <Switch 
+                          id="custom-api" 
+                          checked={apiSettings.useCustomApi}
+                          onCheckedChange={(checked) => setApiSettings(prev => ({...prev, useCustomApi: checked}))}
+                        />
+                        <Label htmlFor="custom-api">Use my OpenAI API key</Label>
+                      </div>
+                      
+                      {apiSettings.useCustomApi && (
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="api-key">OpenAI API Key</Label>
+                            <div className="relative">
+                              <Input
+                                id="api-key"
+                                type="password"
+                                placeholder="Enter your OpenAI API key"
+                                value={apiSettings.apiKey}
+                                onChange={(e) => setApiSettings(prev => ({...prev, apiKey: e.target.value}))}
+                              />
+                              <Key className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <p className="text-xs text-muted-foreground">Your API key is stored locally on your device only.</p>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor="model">ChatGPT Model</Label>
+                            <Select 
+                              value={apiSettings.model} 
+                              onValueChange={(value) => setApiSettings(prev => ({...prev, model: value}))}
+                            >
+                              <SelectTrigger id="model">
+                                <SelectValue placeholder="Select model" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="gpt-4o-mini">GPT-4o Mini (Fast & Affordable)</SelectItem>
+                                <SelectItem value="gpt-4o">GPT-4o (Powerful)</SelectItem>
+                                <SelectItem value="gpt-4.5-preview">GPT-4.5 Preview (Most Advanced)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button onClick={saveApiSettings}>Save Settings</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
               
               <div className="flex flex-wrap gap-2 mb-4">
