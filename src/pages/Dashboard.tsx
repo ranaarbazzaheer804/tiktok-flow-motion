@@ -83,9 +83,16 @@ const Dashboard = () => {
           </div>
           <div className="flex gap-2">
             <Button 
+              onClick={() => navigate('/ai-assistant')}
+              className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90"
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              AI Assistant
+            </Button>
+            <Button 
               onClick={handleGenerateScript}
               disabled={isGenerating}
-              className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90"
+              variant="outline"
             >
               {isGenerating ? (
                 <>

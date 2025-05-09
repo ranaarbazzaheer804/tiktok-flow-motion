@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Demo from "./pages/Demo";
+import AIAssistant from "./pages/AIAssistant";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -34,6 +35,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/ai-assistant" 
+                element={
+                  <ProtectedRoute>
+                    <AIAssistant />
                   </ProtectedRoute>
                 } 
               />
