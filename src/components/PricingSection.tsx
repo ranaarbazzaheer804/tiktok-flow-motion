@@ -4,53 +4,69 @@ import { PricingCard } from "./PricingCard";
 export function PricingSection() {
   const pricingPlans = [
     {
-      name: "Free",
-      description: "Perfect for trying out the platform",
+      name: "Free Trial",
+      description: "Try all features for 30 days",
       price: "$0",
-      period: "month",
+      period: "for 30 days",
       features: [
-        { title: "5 script generations per month", included: true },
-        { title: "Basic trend analysis", included: true },
-        { title: "Standard script templates", included: true },
+        { title: "Full access to all features", included: true },
+        { title: "AI script generation", included: true },
+        { title: "Basic templates", included: true },
         { title: "Community support", included: true },
-        { title: "Advanced customization", included: false },
-        { title: "Performance analytics", included: false },
+        { title: "ChatGPT AI assistant", included: true },
+        { title: "Advanced analytics", included: false },
       ],
-      ctaText: "Get Started",
+      ctaText: "Start Free Trial",
       ctaLink: "/signup",
     },
     {
       name: "Starter",
       description: "Great for content creators",
-      price: "$19",
+      price: "$29",
       period: "month",
       features: [
-        { title: "50 script generations per month", included: true },
-        { title: "Advanced trend analysis", included: true },
+        { title: "5 scripts per day", included: true },
         { title: "All script templates", included: true },
+        { title: "ChatGPT AI assistant", included: true },
         { title: "Email support", included: true },
-        { title: "Advanced customization", included: true },
-        { title: "Basic performance analytics", included: true },
+        { title: "Basic analytics", included: true },
+        { title: "Export to all platforms", included: true },
       ],
       popular: true,
-      ctaText: "Start Free Trial",
+      ctaText: "Get Started",
       ctaLink: "/signup",
     },
     {
       name: "Pro",
-      description: "For serious TikTok influencers",
-      price: "$49",
+      description: "For serious content creators",
+      price: "$50",
       period: "month",
       features: [
-        { title: "Unlimited script generations", included: true },
-        { title: "Real-time trend analysis", included: true },
-        { title: "All script templates", included: true },
+        { title: "10 scripts per day", included: true },
+        { title: "Advanced insights & analytics", included: true },
+        { title: "Premium ChatGPT AI assistant", included: true },
         { title: "Priority support", included: true },
-        { title: "Advanced customization", included: true },
-        { title: "Advanced performance analytics", included: true },
+        { title: "Custom script templates", included: true },
+        { title: "Team collaboration", included: true },
       ],
-      ctaText: "Start Free Trial",
+      ctaText: "Upgrade to Pro",
       ctaLink: "/signup",
+    },
+    {
+      name: "Custom Agent",
+      description: "For agencies and businesses",
+      price: "$149",
+      period: "month",
+      features: [
+        { title: "Unlimited scripts", included: true },
+        { title: "Dedicated AI assistant", included: true },
+        { title: "White-label exports", included: true },
+        { title: "API access", included: true },
+        { title: "Client management tools", included: true },
+        { title: "Dedicated account manager", included: true },
+      ],
+      ctaText: "Contact Sales",
+      ctaLink: "/contact",
     },
   ];
 
@@ -66,7 +82,7 @@ export function PricingSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <PricingCard
               key={index}
@@ -80,6 +96,12 @@ export function PricingSection() {
               ctaLink={plan.ctaLink}
             />
           ))}
+        </div>
+        
+        <div className="text-center mt-12">
+          <p className="text-muted-foreground">
+            Our goal: 200 active users by the end of month 3
+          </p>
         </div>
       </div>
     </section>

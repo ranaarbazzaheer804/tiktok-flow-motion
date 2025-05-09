@@ -22,7 +22,7 @@ const AIAssistant = () => {
     const initialMessage: ChatMessage = {
       id: uuidv4(),
       role: 'assistant',
-      content: "Hi there! I'll help you create a viral script for your content. What type of content are you looking to create today?",
+      content: "Hi there! I'm your ChatGPT-powered AI assistant. I'll help you create a viral script for your content. What type of content are you looking to create today?",
       timestamp: new Date()
     };
     setMessages([initialMessage]);
@@ -110,8 +110,8 @@ const AIAssistant = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-2">Script Generator</h1>
-        <p className="text-muted-foreground mb-8">Create customized viral content scripts with AI</p>
+        <h1 className="text-3xl font-bold mb-2">ChatGPT Script Generator</h1>
+        <p className="text-muted-foreground mb-8">Create customized viral content scripts with ChatGPT AI</p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Panel - Chat UI */}
@@ -120,6 +120,8 @@ const AIAssistant = () => {
               messages={messages}
               onSendMessage={handleSendMessage}
               isProcessing={isProcessing}
+              title="Chat with ChatGPT"
+              subtitle="Our advanced AI will help you create the perfect content script"
             />
           </div>
           

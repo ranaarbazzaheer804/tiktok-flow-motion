@@ -11,16 +11,16 @@ export function HeroSection() {
           <div className="animate-fade-in">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
               Generate Viral TikTok Scripts with
-              <span className="text-gradient"> AI</span>
+              <span className="text-gradient"> ChatGPT AI</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Create trending content that captivates your audience and boosts engagement.
-              Our AI analyzes trending topics to generate scripts that go viral.
+              Our ChatGPT-powered AI analyzes trending topics to generate scripts that go viral.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/signup">
                 <Button className="bg-gradient-to-r from-viral-purple to-viral-pink text-white hover:opacity-90 px-6 py-6 text-lg font-medium">
-                  Start Free Trial
+                  Start Free 30-Day Trial
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
