@@ -14,37 +14,41 @@ export function VoiceInput({ onTranscript, disabled = false }: VoiceInputProps) 
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-      // Browser supports speech recognition
+    // Check if window is defined (browser environment)
+    if (typeof window !== 'undefined') {
+      // Check if SpeechRecognition is supported
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognitionInstance = new SpeechRecognition();
       
-      recognitionInstance.continuous = true;
-      recognitionInstance.interimResults = true;
-      recognitionInstance.lang = 'en-US';
-      
-      recognitionInstance.onresult = (event) => {
-        const transcript = Array.from(event.results)
-          .map(result => result[0])
-          .map(result => result.transcript)
-          .join('');
+      if (SpeechRecognition) {
+        const recognitionInstance = new SpeechRecognition();
         
-        onTranscript(transcript);
-      };
-      
-      recognitionInstance.onerror = (event) => {
-        console.error('Speech recognition error', event);
-        setIsListening(false);
-        toast.error("Voice input error", {
-          description: "There was a problem with your microphone"
-        });
-      };
-      
-      recognitionInstance.onend = () => {
-        setIsListening(false);
-      };
-      
-      setRecognition(recognitionInstance);
+        recognitionInstance.continuous = true;
+        recognitionInstance.interimResults = true;
+        recognitionInstance.lang = 'en-US';
+        
+        recognitionInstance.onresult = (event) => {
+          const transcript = Array.from(event.results)
+            .map(result => result[0])
+            .map(result => result.transcript)
+            .join('');
+          
+          onTranscript(transcript);
+        };
+        
+        recognitionInstance.onerror = (event) => {
+          console.error('Speech recognition error', event);
+          setIsListening(false);
+          toast.error("Voice input error", {
+            description: "There was a problem with your microphone"
+          });
+        };
+        
+        recognitionInstance.onend = () => {
+          setIsListening(false);
+        };
+        
+        setRecognition(recognitionInstance);
+      }
     }
     
     return () => {
