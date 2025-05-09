@@ -42,7 +42,7 @@ export function HeroSection() {
                     <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
                     <span className="w-3 h-3 rounded-full bg-green-500"></span>
                   </div>
-                  <span>TikTok Script Generator</span>
+                  <span>ChatGPT Script Generator</span>
                 </div>
                 <div className="mb-4 space-y-2">
                   <div className="h-6 bg-foreground/5 rounded animate-pulse w-3/4"></div>

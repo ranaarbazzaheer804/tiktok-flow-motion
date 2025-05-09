@@ -121,7 +121,7 @@ const AIAssistant = () => {
               onSendMessage={handleSendMessage}
               isProcessing={isProcessing}
               title="Chat with ChatGPT"
-              subtitle="Our advanced AI will help you create the perfect content script"
+              subtitle="Our advanced ChatGPT AI will help you create the perfect content script"
             />
           </div>
           
@@ -129,7 +129,7 @@ const AIAssistant = () => {
           <div className="flex flex-col h-[70vh]">
             <div className="glass-card p-4 mb-4">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="font-semibold">Script Output</h2>
+                <h2 className="font-semibold">ChatGPT Script Output</h2>
                 <Select value={platform} onValueChange={setPlatform}>
                   <SelectTrigger className="w-32">
                     <SelectValue placeholder="Platform" />
@@ -171,7 +171,7 @@ const AIAssistant = () => {
               <div className="p-3 bg-viral-purple/10 border-b border-viral-purple/20 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className={`inline-block w-2 h-2 rounded-full ${platform === 'tiktok' ? 'bg-viral-pink' : platform === 'youtube' ? 'bg-red-500' : 'bg-blue-400'}`}></span>
-                  <span className="font-medium">{platform.charAt(0).toUpperCase() + platform.slice(1)} Script</span>
+                  <span className="font-medium">ChatGPT {platform.charAt(0).toUpperCase() + platform.slice(1)} Script</span>
                 </div>
                 <div className="flex gap-2">
                   <Button 
@@ -217,7 +217,7 @@ const AIAssistant = () => {
                   <div className="h-full flex items-center justify-center text-muted-foreground">
                     <div className="text-center">
                       <Sparkles className="mx-auto h-8 w-8 mb-2 text-viral-purple opacity-50" />
-                      <p>Chat with the AI assistant to generate a script</p>
+                      <p>Chat with the ChatGPT AI assistant to generate a script</p>
                     </div>
                   </div>
                 )}

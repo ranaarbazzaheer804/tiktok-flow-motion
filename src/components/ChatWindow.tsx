@@ -21,8 +21,8 @@ export function ChatWindow({
   onSendMessage,
   isProcessing,
   messages,
-  title = "Chat with AI Assistant",
-  subtitle = "I'll help you create viral content scripts for your platform."
+  title = "Chat with ChatGPT AI Assistant",
+  subtitle = "Powered by ChatGPT - I'll help you create viral content scripts for your platform."
 }: ChatWindowProps) {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
